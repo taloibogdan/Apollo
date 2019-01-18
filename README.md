@@ -7,7 +7,10 @@ Archegetes (/ɑːrˈkɛdʒətiːz/ ar-KEJ-ə-teez; Ἀρχηγέτης, Arkhēge
 fundatia pentru proiecte
 
 Musagetes (/mjuːˈsædʒɪtiːz/ mew-SAJ-i-teez; Doric Μουσαγέτας, Mousāgetās), from Μούσα, "Muse", and ἡγέτης "leader"
-perception
+muzica, frumos
+
+Genetor (/ˈdʒɛnɪtər/ JEN-i-tər; Γενέτωρ, Genetōr), literally "ancestor"
+generatorul de retele
 
 
 https://en.wikipedia.org/wiki/Apollo#Greco-Roman_epithets
