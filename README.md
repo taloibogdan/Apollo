@@ -1,3 +1,6 @@
-# Hermes
-tensorflow workflow manager
+# Apollo
+
+
+brings structure to tensorflow projects
+
 
