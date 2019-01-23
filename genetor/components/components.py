@@ -1,6 +1,6 @@
 import tensorflow as tf
 import numpy as np
-from . import builder
+from .. import builder
 
 
 def xavier_over_2(shape, variable_type):
