@@ -11,7 +11,7 @@ architecture = [{
     'params': {
         'meta_path': '../data/tf_records/mnist/train/meta.json',
         'parsers': {
-            'input': genetor.components.components.parse_image(shape = [28, 28, 1])
+            'input': genetor.components.parse_image(shape = [28, 28, 1])
         },
         'create_placeholders_for': ['input', 'target'],
         'return': 'input'
