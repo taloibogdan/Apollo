@@ -37,13 +37,13 @@ def new_graph(architecture = [], input = None):
     return last_layer
 
 
-def new_architecture(model, input, structure):
+def new_architecture(model, structure):
     model_generator = getattr(architectures, model)
     
     structure = dict(DEFAULT_STRUCTURE.get(model, {}),
                      **structure)
 
-    return model_generator.generate_architecture(input, structure)
+    return model_generator.generate_architecture(structure)
     
 
 
