@@ -3,7 +3,7 @@ import os
 import tensorflow as tf
 
 
-class TFWriter(object):
+class Writer(object):
 
     def __init__(self, dir, format):
         self.dir = dir
@@ -55,7 +55,7 @@ class TFWriter(object):
 
     def apply_processor(self, feature_name, feature):
         data_type = self.format[feature_name]
-        return getattr(TFWriter, f'_{data_type}_feature')(feature)
+        return getattr(Writer, f'_{data_type}_feature')(feature)
 
 
     def write_sample(self, sample):

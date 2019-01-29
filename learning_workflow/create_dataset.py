@@ -1,13 +1,13 @@
 import sys
 sys.path.append('..')
-from genetor.dataset.tf_records import TFWriter
+import genetor
 import os
 import tensorflow as tf
 import glob
 
 
 for usage in ['train', 'val', 'test']:
-    writer = TFWriter(
+    writer = genetor.data.Writer(
         dir = f'../data/tf_records/mnist/{usage}/',
         format = {
             'input': 'bytes',
