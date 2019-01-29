@@ -72,6 +72,10 @@ DEFAULT_PARAMS = {
     },
     'reduce_max': {
         'axis': -1
+    },
+    'gan_loss': {
+        'generator_scope': 'generator',
+        'discriminator_scope': 'discriminator'
     }
 }
 

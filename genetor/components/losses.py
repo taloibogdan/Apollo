@@ -47,6 +47,51 @@ def cross_entropy(input, **params):
     return loss
 
 
+def gan_loss(input, **params):
+    with tf.variable_scope(params['name']):
+        generator_scope = params['generator_scope']
+        discriminator_scope = params['discriminator_scope']
+        discriminator_output = tf.reshape(input, [-1])
+
+        is_real = tf.placeholder(
+            shape = [None],
+            dtype = tf.float32,
+            name = 'is_real'
+        )
+        generator_variables = tf.get_collection(
+            tf.GraphKeys.TRAINABLE_VARIABLES,
+            scope = generator_scope
+        )
+        generator_loss = tf.reduce_sum(
+            -tf.log(discriminator_output + 1e-5) * (1. - is_real),
+            name = 'generator_loss'
+        )
+        generator_optimizer = tf.train.AdamOptimizer()
+
+        discriminator_loss = (
+            -tf.reduce_sum(tf.log(discriminator_output + 1e-5) * is_real) -
+            tf.reduce_sum(tf.log(1.0 - discriminator_output - 1e-5) * (1.0 - is_real))
+        )
+        discriminator_loss = tf.identity(discriminator_loss,
+                                         name = 'discriminator_loss')
+        discriminator_variables = tf.get_collection(
+            tf.GraphKeys.TRAINABLE_VARIABLES,
+            scope = discriminator_scope
+        )
+        discriminator_optimizer = tf.train.AdamOptimizer(learning_rate = 1e-5)
+
+    generator_optimizer = generator_optimizer.minimize(
+        generator_loss,
+        var_list = generator_variables,
+        name = 'generator_optimizer'
+    )
+    discriminator_optimizer = discriminator_optimizer.minimize(
+        discriminator_loss,
+        var_list = discriminator_variables,
+        name = 'discriminator_optimizer'
+    )
+
+
 def contrastive_center_loss(input, **params):
     with tf.variable_scope(params['name']):
         target = to_tensor(params['target'])

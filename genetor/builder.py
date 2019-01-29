@@ -1,6 +1,7 @@
 import tensorflow as tf
 from . import architectures
-from .components import components
+# import .components
+from . import components
 from .components.default_params import DEFAULT_PARAMS
 from .architectures.default_structures import DEFAULT_STRUCTURE
 

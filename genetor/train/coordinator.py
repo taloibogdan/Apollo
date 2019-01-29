@@ -32,35 +32,50 @@ class Coordinator(object):
         self.epoch_n = -1
 
 
-    def train(self, n_iterations = 1, validate_every = 1, log_every = 'iteration'):
+    def train_epoch(self):
         self.epoch_n = 0
 
-        self.initialize_iterators('train') 
+        self.initialize_iterators()
         n_iterations = math.ceil(self.n_samples / self.placeholders[self.batch_size])
         for iteration_n in range(n_iterations):
+            feed_dict = {
+                name: generator(iteration_n, self.placeholders[self.batch_size])
+                for name, generator in self.placeholders.items()
+                if name != self.batch_size
+            }
             results = self.session.run(
-                [self.summary_merged] + 
                 [self.operations[self.next_batch]] + 
-                [self.operations[optimizer_name] for optimizer_name in self.optimizers]
+                [
+                    self.operations[optimizer_name]
+                    for optimizer_name in self.optimizers
+                ] +
+                [self.summary_merged],
+                feed_dict = feed_dict
             )
             self.summary_writer.add_summary(
-                results[0],
+                results[-1],
                 (self.epoch_n * n_iterations) + iteration_n
             )
 
 
     def create_summary(self):
-        tf.summary.scalar('accuracy', self.tensors[self.summary['scalars'][0]])
+        for tensor_name in self.summary['scalars']:
+            tf.summary.scalar(tensor_name, self.tensors[tensor_name])
+
+        for image in self.summary['images']:
+            tf.summary.image(
+                image['name'],
+                self.tensors[image['tensor']],
+                max_outputs = image['max_outputs']
+            )
 
         if os.path.exists(self.summary['path']):
             shutil.rmtree(self.summary['path'])
-
         self.summary_merged = tf.summary.merge_all()
         self.summary_writer = tf.summary.FileWriter(
             self.summary['path'],
             self.graph
         )
-
 
 
     def load_session(self):
@@ -78,7 +93,7 @@ class Coordinator(object):
             *self.placeholders.keys(),
             self.record_paths_placeholder,
             *self.summary['scalars'],
-            *self.summary['images']
+            *[image['tensor'] for image in self.summary['images']]
         ]
         for tensor_name in tensor_names:
             self.tensors[tensor_name] = self.graph.get_tensor_by_name(
@@ -99,15 +114,15 @@ class Coordinator(object):
             )
 
 
-    def initialize_iterators(self, usage):
+    def initialize_iterators(self):
         self.n_samples = sum(
             sum(1 for _ in tf.python_io.tf_record_iterator(filename))
-            for filename in self.record_paths[usage]
+            for filename in self.record_paths
         )
         self.session.run(
             self.operations[self.iterator_initializer],
             feed_dict = {
-                self.tensors[self.record_paths_placeholder]: self.record_paths[usage],
+                self.tensors[self.record_paths_placeholder]: self.record_paths,
                 self.tensors[self.batch_size]: self.placeholders[self.batch_size]
             }
         )
