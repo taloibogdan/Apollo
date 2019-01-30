@@ -1,5 +1,7 @@
 import tensorflow as tf
 from .basic import to_tensor
+from .initializations import default_initialization
+from .default_params import DEFAULT_PARAMS
 
 
 def conv(input, **params):
@@ -96,7 +98,7 @@ def skip(input, **params):
 def fire(input, **params):
     with tf.variable_scope(params['name']):
         params['squeeze'] = params.get('squeeze', {})
-        params['squeeze'] = dict(builder.DEFAULT_PARAMS['conv'],
+        params['squeeze'] = dict(DEFAULT_PARAMS['conv'],
                                  **params['squeeze'],
                                  kernel_size = 1,
                                  name = 'squeeze')
@@ -104,7 +106,7 @@ def fire(input, **params):
                               **params['squeeze'])
 
         params['expand_obo'] = params.get('expand_obo', {})
-        params['expand_obo'] = dict(builder.DEFAULT_PARAMS['conv'],
+        params['expand_obo'] = dict(DEFAULT_PARAMS['conv'],
                                     **params['expand_obo'],
                                     kernel_size = 1,
                                     name = 'expand_obo')
@@ -112,7 +114,7 @@ def fire(input, **params):
                         **params['expand_obo'])
 
         params['expand_tbt'] = params.get('expand_tbt', {})
-        params['expand_tbt'] = dict(builder.DEFAULT_PARAMS['conv'],
+        params['expand_tbt'] = dict(DEFAULT_PARAMS['conv'],
                                     **params['expand_tbt'],
                                     kernel_size = 3,
                                     name = 'expand_tbt')

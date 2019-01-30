@@ -77,3 +77,49 @@ def fc(input, **params):
 
     return output
 
+
+def fc_parallel(input, **params):  # for [n_batch, n_parallel, n_inputs]
+    with tf.variable_scope(params.get('name', '')):
+        n_outputs = params['units']
+        initialization = params['initialization']
+        n_inputs = input.shape[-1].value
+
+        kernel = tf.Variable(
+            initial_value = initialization(shape = [n_inputs, n_outputs]),
+            name = 'kernel',
+            dtype = tf.float32)
+        kernel = tf.expand_dims(kernel, 0)
+        kernel = tf.tile(kernel, [tf.shape(input)[0], 1, 1])
+
+        bias = tf.Variable(
+            initial_value = tf.zeros(shape = [n_outputs]),
+            name = 'bias',
+            dtype = tf.float32)
+
+        weighted_input = tf.matmul(input, kernel,
+                                   name = 'weighted_input')
+        output_raw = tf.add(weighted_input, bias,
+                            name = 'output_raw')
+
+        activation = params.get('activation', None)
+        if activation is None:
+            activation = tf.identity
+        output = activation(output_raw,
+                            name = 'output')
+
+    return output
+
+
+def scrambler(input, **params):
+    with tf.variable_scope(params['name']):
+        n_untouched = params['n_untouched']
+        n_inputs = input.get_shape()[-1].value
+        rands = tf.random_uniform([n_inputs-n_untouched], dtype=tf.float32)
+        ones = tf.ones([n_untouched], dtype=tf.float32)
+        mask = tf.concat([ones, rands], 0)
+        output = input*mask
+        activation = params.get('activation', None)
+        if activation is None:
+            activation = tf.identity
+        output = activation(output, name='output')
+        return output

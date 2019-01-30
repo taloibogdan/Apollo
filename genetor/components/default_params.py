@@ -76,6 +76,34 @@ DEFAULT_PARAMS = {
     'gan_loss': {
         'generator_scope': 'generator',
         'discriminator_scope': 'discriminator'
+    },
+    'fc_parallel': {
+        'initialization': components.default_initialization,
+        'units': 512,
+        'activation': tf.nn.relu
+    },
+    'scrambler': {
+        'n_untouched': 0
+    },
+    'RNN': {
+        'cell_type': 'LSTM',
+        'hidden_dims': [64],
+        'initial_state': None,
+        'sequence_length': None
+    },
+    'bidirectional_RNN': {
+        'cell_type': 'LSTM',
+        'hidden_dims': [64],
+        'initial_state_fw': None,
+        'initial_state_bw': None,
+        'sequence_length': None
+    },
+    'attention_decoder': {
+        'cell_type': 'LSTM',
+        'hidden_dims': [64],
+        'initial_state': None,
+        'encoder_states': None,
+        'encoder_mask': None
     }
 }
 

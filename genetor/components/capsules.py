@@ -1,4 +1,5 @@
 import tensorflow as tf
+import numpy as np
 
 
 def squash(input, axis = -1, epsilon = 1e-7, name = 'squashed'):
